@@ -1,4 +1,4 @@
-debug = True
+debug = False
 cols = 5
 rows = 5
 strand_length = 25

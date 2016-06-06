@@ -6,6 +6,8 @@ import pypurdypixels
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 Strand = pypurdypixels.Strand
 
@@ -43,3 +45,11 @@ class Light(models.Model):
         g = self.color[3:5]
         b = self.color[5:7]
         return map(lambda x: int(x,16), (r,g,b))
+
+    def __unicode__(self):
+        return "light %d : %s"%(self.position, self.assigned_user)
+
+
+@receiver(post_save, sender=Light)
+def update_stock(sender, instance, **kwargs):
+    Light.objects.get_strand()
