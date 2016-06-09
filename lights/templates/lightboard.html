@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>lights</title>
+</head>
+<body>
+  <style type="text/css">
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      flex: 0 0 70%;
+    }
+    .light {
+      display: flex;
+      flex: 0 0 20%;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+    .light > div {
+      display: flex;
+      padding-top: 50%;
+      padding-bottom: 50%;
+      text-transform: capitalize;
+      text-shadow: -1px -1px 0px white;
+    }
+  </style>
+  <div class='container'>
+    {% for light in lights %}
+      <div class="light" style="background-color:{{light.color}}">
+        <div>
+          {% if light.assigned_user %}
+            {{ light.assigned_user.username }}
+          {% else %}
+            UNASSIGNED
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</body>
+</html>
