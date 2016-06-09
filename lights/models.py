@@ -14,11 +14,21 @@ Strand = pypurdypixels.Strand
 
 # Create your models here.
 class LightManager(models.Manager):
+    def get_pixels(self):
+        lights = self.get_queryset()
+        pos_sorted_pixels = map(lambda x: (Strand.rgb2px(*x.color_as_pixel), x.position), lights)
+        matrix_sorted_pixels = [0] * matrix_settings.strand_length
+        for idx,pix_val in enumerate(pos_sorted_pixels):
+            matrix_index = matrix_settings.mapping[pix_val[1]]
+            matrix_sorted_pixels[matrix_index] = pix_val[0]
+        return matrix_sorted_pixels
+
+
+
     def get_strand(self):
         num_pixels = matrix_settings.strand_length
         debug_mode = matrix_settings.debug
-        lights = self.get_queryset()
-        pixels = map(lambda x: Strand.rgb2px(*x.color_as_pixel), lights)
+        pixels = self.get_pixels()
         strand = Strand(strand_length=num_pixels, pixels=pixels,
                         debug_mode=debug_mode)
         return strand
@@ -36,7 +46,7 @@ class Light(models.Model):
 
     position = models.IntegerField(unique=True)
     assigned_user = models.ForeignKey(User, null=True, blank=True)
-    color = RGBColorField()
+    color = RGBColorField(colors=['#FFFFFF', '#FF0000', '#00FF00', '#0000FF', "#000000"])
     objects = LightManager()
 
     @property
