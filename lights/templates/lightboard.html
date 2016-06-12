@@ -1,43 +1,223 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
   <title>lights</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reqwest/2.0.5/reqwest.js"></script>
+  <script src="https://code.jquery.com/jquery-3.0.0.min.js"
+          integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
 </head>
 <body>
-  <style type="text/css">
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-      flex: 0 0 70%;
-    }
-    .light {
-      display: flex;
-      flex: 0 0 20%;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-    }
-    .light > div {
-      display: flex;
-      padding-top: 50%;
-      padding-bottom: 50%;
-      text-transform: capitalize;
-      text-shadow: -1px -1px 0px white;
-    }
-  </style>
-  <div class='container'>
-    {% for light in lights %}
-      <div class="light" style="background-color:{{light.color}}">
-        <div>
-          {% if light.assigned_user %}
-            {{ light.assigned_user.username }}
-          {% else %}
-            UNASSIGNED
-          {% endif %}
-        </div>
-      </div>
-    {% endfor %}
+<style type="text/css">
+  body {
+    background-color: #d3d3d3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 80%;
+    height: 500px;
+    justify-content: space-between;
+    align-content: space-between;
+  }
+
+  .light {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px lightgrey;
+    border-radius: 50%;
+    overflow: hidden;
+    #flex: 0 1 18%;
+    #padding-top: 7.2%;
+    #padding-bottom: 7.2%;
+    #margin-bottom: 2%;
+
+    flex: 0 0 20%;
+    padding-top: 8.2%;
+    padding-bottom: 8.2%;
+    transition: transform .5s;
+
+  }
+
+  .active {
+    border-radius: 5%;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0%;
+    padding-bottom: 0%;
+    transition: .5s;
+
+  }
+
+  .light > div {
+    display: flex;
+    text-transform: capitalize;
+    text-shadow: -1px -1px 0px white;
+
+    #align-self: center;
+    #text-align: justify;
+  }
+
+  .light > form {
+    display: none;
+  }
+
+  .active > form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 60%;
+    width: 100%;
+  }
+
+  form > input[type=text] {
+    width: 30%;
+  }
+
+  .colorbox {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 90%;
+  }
+
+  .color {
+    display: flex;
+    flex: 1 1 25%;
+    font-size: 0;
+  }
+</style>
+<h1>Verificient Lightboard</h1>
+<div id='light_container' class="container">
+</div>
+
+
+<template id="colorbox_template">
+  <div class="colorbox">
+    <div class="color" style="background-color: #000000">#000000</div>
+    <div class="color" style="background-color: #FFFFFF">#FFFFFF</div>
+    <div class="color" style="background-color: #FF0000">#FF0000</div>
+    <div class="color" style="background-color: #00FF00">#00FF00</div>
+    <div class="color" style="background-color: #0000FF">#0000FF</div>
+    <div class="color" style="background-color: #1b6d85">#1b6d85</div>
+    <div class="color" style="background-color: #fa63f8">#fa63f8</div>
+    <div class="color" style="background-color: #ff7b00">#ff7b00</div>
   </div>
+</template>
+
+<template id="light_template">
+  <div class="light">
+    <div></div>
+
+    <form class="colorform" action="" method="post">
+      <input type="hidden" name="pk" value=""/>
+      <input readonly type="text" name="position"/>
+    </form>
+  </div>
+</template>
+<script type="text/javascript">
+  // I'm so sorry. I am not a javascript coder...
+
+
+  function refresh_lights(data) {
+    // get template from document
+    var t = document.querySelector('#light_template');
+    var c = document.querySelector("#colorbox_template");
+    var colorbox_clone = document.importNode(c.content, true);
+
+    $("#light_container").empty();
+    for (var i = 0; i < data.length; i++) {
+      var light = data[i];
+      t.content.querySelector(".light").style.backgroundColor = light.color;
+
+      t.content.querySelector(".light")
+          .querySelector("div")
+          .innerHTML = light.assigned_user ? light.assigned_user : "Unassigned";
+
+      t.content.querySelector(".light")
+          .querySelector(".colorform")
+          .action = "/lights/" + light.pk + "/";
+
+      t.content.querySelector(".light")
+          .querySelector(".colorform")
+          .querySelector("input[type=hidden]")
+          .value = light.pk;
+
+      t.content.querySelector(".light")
+          .querySelector(".colorform")
+          .querySelector("input[type=text]")
+          .value = light.position;
+
+      if (t.content.querySelector(".colorbox") == null) {
+        t.content.querySelector(".light")
+            .querySelector(".colorform")
+            .appendChild(colorbox_clone);
+      }
+
+      var clone = document.importNode(t.content, true);
+      document.querySelector("#light_container").appendChild(clone);
+    }
+    $(".light").hover(
+        function (evnt) {
+          $(this).addClass('active');
+        },
+        function (evnt) {
+          $(this).removeClass('active');
+        }
+    );
+    // submits form when color changes
+    $(".color").on('click', function (evnt) {
+      var elem = $(this)[0];
+      var form = elem.parentElement.parentElement;
+      var url = form.action;
+      var color = elem.innerHTML;
+      $.ajax({
+        url: url,
+        type: "put",
+        data: {color: color},
+        success: function () {
+          get_lights_from_server(refresh_lights, function () {
+          })
+        }
+      });
+    });
+  }
+
+  function get_lights_from_server(success, err) {
+    $.ajax({
+      url: "/lights/",
+      type: "get",
+      success: success,
+      error: err
+    });
+  }
+
+  $(function () {
+    get_lights_from_server(refresh_lights, function (err) {
+      console.log(err)
+
+    });
+    //stupid approach to real-time updates
+    setInterval(function () {
+      if (document.querySelector(".active") == null) { // prevent refresh if hover active
+        get_lights_from_server(refresh_lights, function (err) {
+          console.log(err);
+        });
+      }
+    }, 10000);
+
+  });
+
+
+</script>
 </body>
 </html>

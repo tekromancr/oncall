@@ -24,7 +24,6 @@ class LightManager(models.Manager):
         return matrix_sorted_pixels
 
 
-
     def get_strand(self):
         num_pixels = matrix_settings.strand_length
         debug_mode = matrix_settings.debug
@@ -39,12 +38,18 @@ class LightManager(models.Manager):
         mapping = matrix_settings.mapping
         return pypurdypixels.Matrix(strand=self.get_strand())
 
+def position_validator(value):
+    if 0 > value > matrix_settings.strand_length-1:
+        raise ValidationError(
+            _('%(value)s is an invalid value for position'),
+            params={'value': value},
+        )
 
 class Light(models.Model):
     class Meta:
         ordering = ('position',)
 
-    position = models.IntegerField(unique=True)
+    position = models.IntegerField(validators=[position_validator], unique=True)
     assigned_user = models.ForeignKey(User, null=True, blank=True)
     color = RGBColorField(colors=['#FFFFFF', '#FF0000', '#00FF00', '#0000FF', "#000000"])
     objects = LightManager()

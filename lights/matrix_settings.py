@@ -1,4 +1,5 @@
-debug = True
+from django.conf import settings
+debug = not settings.IN_MEM_DB # If we are using the in-mem db, we are on the raspberrypi
 cols = 5
 rows = 5
 strand_length = 25
