@@ -10,6 +10,7 @@
 <style type="text/css">
   body {
     background-color: #d3d3d3;
+    background-image: url("http://cdn.backgroundhost.com/backgrounds/subtlepatterns/45degreee_fabric.png");
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -20,8 +21,8 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    width: 80%;
-    height: 500px;
+    width: 50%;
+    #height: 500px;
     justify-content: space-between;
     align-content: space-between;
   }
@@ -42,7 +43,7 @@
     flex: 0 0 20%;
     padding-top: 8.2%;
     padding-bottom: 8.2%;
-    transition: transform .5s;
+    transition: all .25s ease-in-out;
 
   }
 
@@ -52,14 +53,18 @@
     align-items: center;
     padding-top: 0%;
     padding-bottom: 0%;
-    transition: .5s;
+    transition: border-radius .25s  ease-in-out;
 
   }
 
   .light > div {
     display: flex;
     text-transform: capitalize;
-    text-shadow: -1px -1px 0px white;
+    color: #ffffff;
+    text-shadow: black 0px 0px 3px;
+    font-size: x-large;
+    font-family: "Roboto", "Lucida Grande", "DejaVu Sans", "Bitstream Vera Sans", Verdana, Arial, sans-serif;
+    overflow: hidden;
 
     #align-self: center;
     #text-align: justify;
@@ -67,6 +72,8 @@
 
   .light > form {
     display: none;
+    opacity: 0;
+    transition: opacity .35s ease-in-out;
   }
 
   .active > form {
@@ -76,6 +83,8 @@
     justify-content: space-between;
     height: 60%;
     width: 100%;
+    opacity: 1;
+    transition: opacity .20s ease-in-out;
   }
 
   form > input[type=text] {
@@ -141,7 +150,7 @@
 
       t.content.querySelector(".light")
           .querySelector("div")
-          .innerHTML = light.assigned_user ? light.assigned_user : "Unassigned";
+          .innerHTML = light.assigned_user ? light.assigned_user : "?";
 
       t.content.querySelector(".light")
           .querySelector(".colorform")
