@@ -5,6 +5,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reqwest/2.0.5/reqwest.js"></script>
   <script src="https://code.jquery.com/jquery-3.0.0.min.js"
           integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
+  <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.js"></script>
 </head>
 <body>
 <style type="text/css">
@@ -21,7 +23,7 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    width: 50%;
+    width: 70%;
     #height: 500px;
     justify-content: space-between;
     align-content: space-between;
@@ -47,13 +49,13 @@
 
   }
 
-  .active {
+  .light:hover {
     border-radius: 5%;
     justify-content: space-between;
     align-items: center;
     padding-top: 0%;
     padding-bottom: 0%;
-    transition: border-radius .25s  ease-in-out;
+    transition: border-radius .25s ease-in-out;
 
   }
 
@@ -73,10 +75,10 @@
   .light > form {
     display: none;
     opacity: 0;
-    transition: opacity .35s ease-in-out;
+    transition: opacity .20s ease-in-out;
   }
 
-  .active > form {
+  .light:hover > form {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -136,95 +138,69 @@
 <script type="text/javascript">
   // I'm so sorry. I am not a javascript coder...
 
-
-  function refresh_lights(data) {
-    // get template from document
+  function create_light_clone(light) {
     var t = document.querySelector('#light_template');
     var c = document.querySelector("#colorbox_template");
     var colorbox_clone = document.importNode(c.content, true);
 
-    $("#light_container").empty();
-    for (var i = 0; i < data.length; i++) {
-      var light = data[i];
-      t.content.querySelector(".light").style.backgroundColor = light.color;
+    t.content.querySelector(".light").style.backgroundColor = light.color;
 
-      t.content.querySelector(".light")
-          .querySelector("div")
-          .innerHTML = light.assigned_user ? light.assigned_user : "?";
+    t.content.querySelector(".light")
+        .querySelector("div")
+        .innerHTML = light.assigned_user__username ? light.assigned_user__username : "?";
 
+    t.content.querySelector(".light")
+        .querySelector(".colorform")
+        .id = "colorform-" + light.pk;
+
+    t.content.querySelector(".light")
+        .querySelector(".colorform")
+        .action = "/lights/" + light.pk + "/";
+
+    t.content.querySelector(".light")
+        .querySelector(".colorform")
+        .querySelector("input[type=hidden]")
+        .value = light.pk;
+
+    t.content.querySelector(".light")
+        .querySelector(".colorform")
+        .querySelector("input[type=text]")
+        .value = light.position;
+
+    if (t.content.querySelector(".colorbox") == null) {
       t.content.querySelector(".light")
           .querySelector(".colorform")
-          .action = "/lights/" + light.pk + "/";
+          .appendChild(colorbox_clone);
+    }
 
-      t.content.querySelector(".light")
-          .querySelector(".colorform")
-          .querySelector("input[type=hidden]")
-          .value = light.pk;
 
-      t.content.querySelector(".light")
-          .querySelector(".colorform")
-          .querySelector("input[type=text]")
-          .value = light.position;
+    var clone = document.importNode(t.content, true);
+    return clone
+  }
 
-      if (t.content.querySelector(".colorbox") == null) {
-        t.content.querySelector(".light")
-            .querySelector(".colorform")
-            .appendChild(colorbox_clone);
-      }
-
-      var clone = document.importNode(t.content, true);
+  function replace_lights(lights_data) {
+    document.querySelector("#light_container").innerHTML = "";
+    for (var i = 0; i < lights_data.length; i++) {
+      var clone = create_light_clone(lights_data[i]);
       document.querySelector("#light_container").appendChild(clone);
     }
-    $(".light").hover(
-        function (evnt) {
-          $(this).addClass('active');
-        },
-        function (evnt) {
-          $(this).removeClass('active');
-        }
-    );
-    // submits form when color changes
-    $(".color").on('click', function (evnt) {
-      var elem = $(this)[0];
-      var form = elem.parentElement.parentElement;
-      var url = form.action;
-      var color = elem.innerHTML;
-      $.ajax({
-        url: url,
-        type: "put",
-        data: {color: color},
-        success: function () {
-          get_lights_from_server(refresh_lights, function () {
-          })
-        }
-      });
+    [].forEach.call(document.querySelectorAll(".color"), function (el) {
+      el.addEventListener('click', function () {
+        var parent = this.parentElement.parentElement;
+        var pk = parent.querySelector("input[name=pk]").value;
+        var color = this.innerHTML;
+        socket.send(JSON.stringify({pk: pk, color: color}));
+      }, false);
     });
   }
 
-  function get_lights_from_server(success, err) {
-    $.ajax({
-      url: "/lights/",
-      type: "get",
-      success: success,
-      error: err
-    });
+  function receive_message(message) {
+    var data = JSON.parse(message.data);
+    replace_lights(data['lights']);
   }
 
-  $(function () {
-    get_lights_from_server(refresh_lights, function (err) {
-      console.log(err)
-
-    });
-    //stupid approach to real-time updates
-    setInterval(function () {
-      if (document.querySelector(".active") == null) { // prevent refresh if hover active
-        get_lights_from_server(refresh_lights, function (err) {
-          console.log(err);
-        });
-      }
-    }, 10000);
-
-  });
+  var socket = new ReconnectingWebSocket('ws://' + window.location.host);
+  socket.onmessage = receive_message;
 
 
 </script>

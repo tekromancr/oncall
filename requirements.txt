@@ -1,4 +1,10 @@
+appnope==0.1.0
+asgi-redis==0.13.1
+asgiref==0.13.3
+autobahn==0.14.1
 backports.shutil-get-terminal-size==1.0.0
+channels==0.14.1
+daphne==0.12.1
 decorator==4.0.9
 Django==1.9.7
 django-colorful==1.2
@@ -7,10 +13,15 @@ djangorestframework==3.3.3
 gnureadline==6.3.3
 ipython==4.2.0
 ipython-genutils==0.1.0
+msgpack-python==0.4.7
 pathlib2==2.1.0
 pexpect==4.1.0
 pickleshare==0.7.2
 ptyprocess==0.5.1
+redis==2.10.5
 simplegeneric==0.8.1
 six==1.10.0
 traitlets==4.2.1
+Twisted==16.2.0
+txaio==2.5.1
+zope.interface==4.2.0
