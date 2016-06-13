@@ -190,7 +190,7 @@
         var parent = this.parentElement.parentElement;
         var pk = parent.querySelector("input[name=pk]").value;
         var color = this.innerHTML;
-        if(parent.style.display==!="none") { //prevent mobile touches from triggering message send
+        if(parent.style.display!="none") { //prevent mobile touches from triggering message send
           socket.send(JSON.stringify({pk: pk, color: color}));
         }
       }, false);
