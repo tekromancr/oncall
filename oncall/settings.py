@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'xac5g!m-%*)mn&%ma^0!9zxwi&+(0r8x0r%t$6-hhhqkyyvh15'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-IN_MEM_DB = False
+IN_MEM_DB = True
 DEBUG = True
 
 ALLOWED_HOSTS = []
