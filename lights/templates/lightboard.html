@@ -23,7 +23,7 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    width: 70%;
+    width: 50%;
     #height: 500px;
     justify-content: space-between;
     align-content: space-between;
@@ -37,14 +37,14 @@
     border: 2px lightgrey;
     border-radius: 50%;
     overflow: hidden;
-    #flex: 0 1 18%;
-    #padding-top: 7.2%;
-    #padding-bottom: 7.2%;
-    #margin-bottom: 2%;
+    flex: 0 1 18%;
+    padding-top: 7.2%;
+    padding-bottom: 7.2%;
+    margin-bottom: 2%;
 
-    flex: 0 0 20%;
-    padding-top: 8.2%;
-    padding-bottom: 8.2%;
+    #flex: 0 0 20%;
+    #padding-top: 8.2%;
+    #padding-bottom: 8.2%;
     transition: all .25s ease-in-out;
 
   }
@@ -64,7 +64,7 @@
     text-transform: capitalize;
     color: #ffffff;
     text-shadow: black 0px 0px 3px;
-    font-size: x-large;
+    font-size: large;
     font-family: "Roboto", "Lucida Grande", "DejaVu Sans", "Bitstream Vera Sans", Verdana, Arial, sans-serif;
     overflow: hidden;
 
@@ -74,8 +74,6 @@
 
   .light > form {
     display: none;
-    opacity: 0;
-    transition: opacity .20s ease-in-out;
   }
 
   .light:hover > form, .light:active > form {
@@ -85,8 +83,6 @@
     justify-content: space-between;
     height: 60%;
     width: 100%;
-    opacity: 1;
-    transition: opacity .20s ease-in-out;
   }
 
   form > input[type=text] {
@@ -97,14 +93,18 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    flex: 1 1 25%;
     width: 100%;
     height: 90%;
-  }
+}
+.color:after {content:"";}
 
   .color {
-    display: flex;
-    flex: 1 1 25%;
+      display: flex;
+      flex: 0 0 25%;
     font-size: 0;
+    padding-bottom:25%;
+    
   }
 </style>
 <h1>Verificient Lightboard</h1>
@@ -113,7 +113,7 @@
 
 
 <template id="colorbox_template">
-  <div class="colorbox" id="host">
+  <div class="colorbox">
     <div class="color" style="background-color: #000000">#000000</div>
     <div class="color" style="background-color: #FFFFFF">#FFFFFF</div>
     <div class="color" style="background-color: #FF0000">#FF0000</div>
@@ -131,7 +131,6 @@
 
     <form class="colorform" action="" method="post">
       <input type="hidden" name="pk" value=""/>
-      <input readonly type="text" name="position"/>
     </form>
   </div>
 </template>
@@ -161,11 +160,6 @@
         .querySelector(".colorform")
         .querySelector("input[type=hidden]")
         .value = light.pk;
-
-    t.content.querySelector(".light")
-        .querySelector(".colorform")
-        .querySelector("input[type=text]")
-        .value = light.position;
 
     if (t.content.querySelector(".colorbox") == null) {
       t.content.querySelector(".light")
