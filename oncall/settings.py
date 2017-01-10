@@ -24,6 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'xac5g!m-%*)mn&%ma^0!9zxwi&+(0r8x0r%t$6-hhhqkyyvh15'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -38,6 +39,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
+    'rest_framework',
     'lights',
     'colorful',
     'django_extensions'
@@ -78,13 +81,17 @@ WSGI_APPLICATION = 'oncall.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join('/dev/shm/', 'db.sqlite3'),
-    }
-}
 
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "asgiref.inmemory.ChannelLayer",
+        #"CONFIG": {
+        #    "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+        #},
+        "ROUTING": "oncall.routing.channel_routing",
+    },
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
