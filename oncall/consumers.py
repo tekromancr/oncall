@@ -17,11 +17,24 @@ def ws_connect(message):
 
 @channel_session
 def ws_receive(message):
+  from django.db.transaction import atomic
+  @atomic
+  def process_message(message):
     data = json.loads(message.content['text'])
-    light = Light.objects.get(pk=data['pk'])
-    color = data['color']
-    light.color = color
-    light.save()
+    def update_light(data):
+      if "position" not in data:
+        light = Light.objects.get(pk=data['pk'])
+      else:
+        light = Light.objects.get(position=data['position'])
+
+      light.color = data['color']
+      light.save()
+
+    try: # if we only got a single datapoint
+        update_light(data)
+    except Exception:
+      for light_data in data:
+        update_light(light_data)
     Group('lights').send(
         {'text': json.dumps(
             {'lights': list(
@@ -29,6 +42,7 @@ def ws_receive(message):
             )}
         )}
     )
+  process_message(message)
 
 @channel_session
 def ws_disconnect(message):
