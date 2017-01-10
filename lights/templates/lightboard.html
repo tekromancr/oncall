@@ -1,112 +1,18 @@
+{% load static %}
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
+  <meta charset="UTF-8" />
   <title>lights</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/reqwest/2.0.5/reqwest.js"></script>
   <script src="https://code.jquery.com/jquery-3.0.0.min.js"
           integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
   <script type="text/javascript"
           src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.js"></script>
+  <script src="{% static "lights/js/reactjs/react.js" %}"></script>
+  <script src="{% static "lights/js/reactjs/react-dom.js" %}"></script>
+  <style type="text/css" href="{% static "lights/css/style.css" %}" />
 </head>
 <body>
-<style type="text/css">
-  body {
-    background-color: #d3d3d3;
-    background-image: url("http://cdn.backgroundhost.com/backgrounds/subtlepatterns/45degreee_fabric.png");
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    width: 50%;
-    #height: 500px;
-    justify-content: space-between;
-    align-content: space-between;
-  }
-
-  .light {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border: 2px lightgrey;
-    border-radius: 50%;
-    overflow: hidden;
-    flex: 0 1 18%;
-    padding-top: 7.2%;
-    padding-bottom: 7.2%;
-    margin-bottom: 2%;
-
-    #flex: 0 0 20%;
-    #padding-top: 8.2%;
-    #padding-bottom: 8.2%;
-    transition: all .25s ease-in-out;
-
-  }
-
-  .light:hover, .light:active {
-    border-radius: 5%;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 0%;
-    padding-bottom: 0%;
-    transition: border-radius .25s ease-in-out;
-
-  }
-
-  .light > div {
-    display: flex;
-    text-transform: capitalize;
-    color: #ffffff;
-    text-shadow: black 0px 0px 3px;
-    font-size: large;
-    font-family: "Roboto", "Lucida Grande", "DejaVu Sans", "Bitstream Vera Sans", Verdana, Arial, sans-serif;
-    overflow: hidden;
-
-    #align-self: center;
-    #text-align: justify;
-  }
-
-  .light > form {
-    display: none;
-  }
-
-  .light:hover > form, .light:active > form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    height: 60%;
-    width: 100%;
-  }
-
-  form > input[type=text] {
-    width: 30%;
-  }
-
-  .colorbox {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    flex: 1 1 25%;
-    width: 100%;
-    height: 90%;
-}
-.color:after {content:"";}
-
-  .color {
-      display: flex;
-      flex: 0 0 25%;
-    font-size: 0;
-    padding-bottom:25%;
-    
-  }
-</style>
 <h1>Verificient Lightboard</h1>
 <div id='light_container' class="container">
 </div>

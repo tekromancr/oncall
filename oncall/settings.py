@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'xac5g!m-%*)mn&%ma^0!9zxwi&+(0r8x0r%t$6-hhhqkyyvh15'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-IN_MEM_DB = True
+
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -81,12 +81,7 @@ WSGI_APPLICATION = 'oncall.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join('/dev/shm/', 'db.sqlite3') if IN_MEM_DB else os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+
 
 CHANNEL_LAYERS = {
     "default": {
